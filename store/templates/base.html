@@ -50,25 +50,26 @@
                 text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
             }
             
-            /* Dropdown menu styling */
             #educationDropdown {
                 position: absolute;
-                z-index: 999;
+                z-index: 10001;
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                top: 100%;
+                left: 0;
+                background-color: white;
             }
-            
+
             .relative {
                 position: relative;
-                z-index: 100;
+                z-index: 10000;
             }
-            
-            /* Header z-index adjustment */
+
             header {
                 position: relative;
-                z-index: 5;
+                z-index: 1;
+                overflow: visible;
             }
-            
-            /* Header Beams Effect */
+
             .header-beams {
                 position: absolute;
                 inset: 0;
@@ -78,7 +79,7 @@
                 pointer-events: none;
                 z-index: 0;
             }
-            
+
             .header-beam {
                 position: absolute;
                 width: 100%;
@@ -88,7 +89,9 @@
                 opacity: 0.25;
                 filter: blur(4px);
                 animation: header-beam-animation 20s ease-in-out infinite;
+                z-index: 0;
             }
+
             
             .header-beam:nth-child(1) { animation-delay: 0s; }
             .header-beam:nth-child(2) { animation-delay: 3s; }
@@ -577,8 +580,8 @@
 </head>
 <body class="bg-white text-gray-800 min-h-screen flex flex-col">
     <!-- Navbar -->
-    <nav class="bg-primary-600 border-b border-primary-500">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <nav class="bg-primary-600 border-b border-primary-500" style="position: relative; z-index: 99999;">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" style="position: relative; z-index: 99999;">
             <div class="flex h-16 items-center justify-between">
                 <div class="flex items-center">
                     <a href="{% url 'home' %}" class="flex-shrink-0 logo-container">
@@ -613,25 +616,24 @@
                         </svg>
                         <span class="ml-2 text-white font-bold text-xl hidden sm:block">GenericMediCare</span>
                     </a>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-4">
+                    <div class="hidden md:block" style="position: relative; z-index: 99999;">
+                        <div class="ml-10 flex items-baseline space-x-4" style="position: relative; z-index: 99999;">
                             {% if not user.is_authenticated or user.customerprofile %}
                             <a href="{% url 'browse_medicines' %}" class="text-white hover:bg-primary-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Browse Medicines</a>
-                            <div class="relative">
+                            <div class="relative" style="position: relative; z-index: 99999;">
                                 <button id="educationButton" class="text-white hover:bg-primary-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium flex items-center">
                                     Education
                                     <svg class="ml-1 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                <div id="educationDropdown" class="hidden absolute z-10 mt-0 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <div id="educationDropdown" class="hidden absolute z-[99999] mt-0 w-48 rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" style="position: absolute; z-index: 99999;">
                                     <a href="{% url 'education_articles' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Articles</a>
                                     <a href="{% url 'education_infographics' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Infographics</a>
                                     <a href="{% url 'education_faqs' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">FAQs</a>
                                     <a href="{% url 'education_videos' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900">Videos</a>
                                 </div>
                             </div>
-
                             {% endif %}
 
                             {% if user.is_authenticated %}
@@ -699,7 +701,6 @@
                             </div>
                         </div>
                         <div id="google_translate_element"></div>
-
                     </div>
                 </div>
                 
@@ -1089,6 +1090,26 @@
         })();
         </script>
 <!--End of Tawk.to Script-->
+
+<script>
+// Desktop Education dropdown functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const educationButton = document.getElementById('educationButton');
+  const educationDropdown = document.getElementById('educationDropdown');
+  if (educationButton && educationDropdown) {
+    educationButton.addEventListener('click', function(e) {
+      e.stopPropagation();
+      educationDropdown.classList.toggle('hidden');
+    });
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!educationButton.contains(e.target) && !educationDropdown.contains(e.target)) {
+        educationDropdown.classList.add('hidden');
+      }
+    });
+  }
+});
+</script>
 
 </body>
 </html>
