@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-12 max-w-3xl">
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-[0_20px_50px_rgba(76,175,80,0.15)]">
+        <!-- Header with gradient -->
+        <div class="bg-gradient-to-r from-green-500 to-green-600 px-8 py-6 border-b border-green-400">
+            <h2 class="text-2xl font-bold text-white text-center">
+                {% if editing %} Edit Seller Profile {% else %} Register as Seller {% endif %}
+            </h2>
+        </div>
+
+        <!-- Card body -->
+        <div class="p-8">
+            <!-- Display Form Errors -->
+            {% if form.errors or profile_form.errors %}
+                <div class="bg-red-100 border border-red-300 text-red-700 px-4 py-3 rounded mb-6">
+                    <strong class="font-medium">Please correct the following errors:</strong>
+                    <ul class="list-disc pl-5 mt-2 space-y-1">
+                        {% for field, errors in form.errors.items %}
+                            <li><strong>{{ field|title }}:</strong> {{ errors.0 }}</li>
+                        {% endfor %}
+                        {% for field, errors in profile_form.errors.items %}
+                            <li><strong>{{ field|title }}:</strong> {{ errors.0 }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+
+                <div class="space-y-4">
+                    <div>
+                        <label for="id_username" class="block text-gray-700 text-sm font-medium mb-2">Username</label>
+                        <input type="text" name="username" id="id_username" {% if form.username.value %}value="{{ form.username.value }}"{% endif %}
+                            class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Choose a username">
+                        <div class="text-red-600 text-sm mt-1">{{ form.username.errors }}</div>
+                    </div>
+
+                    <div>
+                        <label for="id_email" class="block text-gray-700 text-sm font-medium mb-2">Email</label>
+                        <input type="email" name="email" id="id_email" {% if form.email.value %}value="{{ form.email.value }}"{% endif %}
+                            class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                            placeholder="Your business email address">
+                        <div class="text-red-600 text-sm mt-1">{{ form.email.errors }}</div>
+                    </div>
+
+                    {% if not editing %}
+                        <div>
+                            <label for="id_password1" class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                            <input type="password" name="password1" id="id_password1"
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Create a password">
+                            <div class="text-red-600 text-sm mt-1">{{ form.password1.errors }}</div>
+                        </div>
+                        
+                        <div>
+                            <label for="id_password2" class="block text-gray-700 text-sm font-medium mb-2">Confirm Password</label>
+                            <input type="password" name="password2" id="id_password2"
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Confirm your password">
+                            <div class="text-red-600 text-sm mt-1">{{ form.password2.errors }}</div>
+                        </div>
+                    {% endif %}
+
+                    <div>
+                        <label for="id_business_name" class="block text-gray-700 text-sm font-medium mb-2">Business Name</label>
+                        {% if editing %}
+                            <input type="text" name="business_name" id="id_business_name" {% if profile_form.business_name.value %}value="{{ profile_form.business_name.value }}"{% endif %}
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Your pharmacy/business name">
+                            <div class="text-red-600 text-sm mt-1">{{ profile_form.business_name.errors }}</div>
+                        {% else %}
+                            <input type="text" name="business_name" id="id_business_name" {% if form.business_name.value %}value="{{ form.business_name.value }}"{% endif %}
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Your pharmacy/business name">
+                            <div class="text-red-600 text-sm mt-1">{{ form.business_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="id_phone_number" class="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
+                        {% if editing %}
+                            <input type="text" name="phone_number" id="id_phone_number" {% if profile_form.phone_number.value %}value="{{ profile_form.phone_number.value }}"{% endif %}
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Business contact number">
+                            <div class="text-red-600 text-sm mt-1">{{ profile_form.phone_number.errors }}</div>
+                        {% else %}
+                            <input type="text" name="phone_number" id="id_phone_number" {% if form.phone_number.value %}value="{{ form.phone_number.value }}"{% endif %}
+                                class="w-full bg-gray-50 border border-gray-300 rounded-lg py-3 px-4 text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                                placeholder="Business contact number">
+                            <div class="text-red-600 text-sm mt-1">{{ form.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="pt-4">
+                    <button type="submit" 
+                        class="w-full bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-bold py-3 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+                        {% if editing %} Save Changes {% else %} Register as Seller {% endif %}
+                    </button>
+                </div>
+            </form>
+
+            {% if not editing %}
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600">Already have an account? <a href="{% url 'login' %}" class="text-green-600 hover:text-green-700 font-medium transition-colors duration-300">Login here</a></p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

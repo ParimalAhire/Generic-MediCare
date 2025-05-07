@@ -1,0 +1,190 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 lg:px-8 py-8">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Image Section -->
+            <div class="flex items-center justify-center">
+                <div class="w-full max-w-md overflow-hidden rounded-lg">
+                    {% if medicine.image %}
+                        <img src="{{ medicine.image.url }}" class="w-full h-80 object-cover" alt="{{ medicine.name }}">
+                    {% else %}
+                        <img src="https://th.bing.com/th/id/OIP.nbFq6e14BqDCrFArSeUUwwHaE6?rs=1&pid=ImgDetMain" class="w-full h-80 object-cover" alt="{{ medicine.name }}">
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Details Section -->
+            <div class="flex flex-col">
+                <div class="flex justify-between items-start mb-6">
+                    <h1 class="text-3xl font-bold text-gray-800">{{ medicine.name }}</h1>
+                    <span class="bg-blue-600 text-white font-bold px-4 py-2 rounded-full text-lg">₹{{ medicine.price }}</span>
+                </div>
+                
+                <!-- Categories - Featured prominently at the top with more impact -->
+                {% if medicine.categories.exists %}
+                <div class="mb-5 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg p-4 shadow-md text-white">
+                    <div class="flex items-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-white font-bold text-lg">CATEGORIES</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        {% for category in medicine.categories.all %}
+                        <span class="bg-white text-blue-800 text-sm font-bold px-4 py-2 rounded-full shadow-md transform transition-transform duration-300 hover:scale-105">
+                            {{ category.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <p class="text-gray-700 mb-4">Brand: {{ medicine.brand_name }}</p>
+                
+                <!-- Active Ingredients Card -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Active Ingredients</h3>
+                    <p class="text-gray-700">{{ medicine.active_ingredients }}</p>
+                </div>
+                
+                <!-- Description Card -->
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">Description</h3>
+                    <p class="text-gray-700">{{ medicine.description }}</p>
+                </div>
+                
+                <!-- Stock Status -->
+                {% if medicine.stock > 0 %}
+                    <div class="flex items-center text-green-600 text-lg mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                        <span>In Stock ({{ medicine.stock }} available)</span>
+                    </div>
+                {% else %}
+                    <div class="flex items-center text-red-600 text-lg mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Out of Stock</span>
+                    </div>
+                {% endif %}
+                
+                <!-- Prescription Warning -->
+                {% if medicine.prescription_required %}
+                    <div class="flex items-center text-yellow-600 text-lg mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        </svg>
+                        <span>Prescription Required</span>
+                    </div>
+                {% endif %}
+                
+                <!-- Action Buttons -->
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-4">
+                    <a href="{% url 'browse_medicines' %}" class="inline-flex justify-center items-center px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-800 text-base font-medium rounded-md transition-colors duration-300 border border-gray-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Back to Browse
+                    </a>
+                    
+                    {% if medicine.stock > 0 %}
+                        {% if user.is_authenticated and user.customerprofile %}
+                            <a href="{% url 'add_to_cart' medicine.pk %}" class="inline-flex justify-center items-center px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white text-base font-medium rounded-md transition-colors duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                Add to Cart
+                            </a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="inline-flex justify-center items-center px-6 py-3 bg-yellow-600 hover:bg-yellow-700 text-white text-base font-medium rounded-md transition-colors duration-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Login to Buy
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <button class="inline-flex justify-center items-center px-6 py-3 bg-gray-200 text-gray-500 text-base font-medium rounded-md cursor-not-allowed border border-gray-300" disabled>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Out of Stock
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alternative Medicines Section -->
+    {% if alternatives %}
+    <div class="mt-12">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Generic Alternatives</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for alt in alternatives %}
+            <div class="group">
+                <div class="relative h-full bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-200">
+                    <div class="aspect-w-4 aspect-h-3 w-full overflow-hidden">
+                        {% if alt.image %}
+                            <img src="{{ alt.image.url }}" class="w-full h-48 object-cover transform transition-transform duration-500 group-hover:scale-110" alt="{{ alt.name }}">
+                        {% else %}
+                            <img src="https://th.bing.com/th/id/OIP.nbFq6e14BqDCrFArSeUUwwHaE6?rs=1&pid=ImgDetMain" class="w-full h-48 object-cover transform transition-transform duration-500 group-hover:scale-110" alt="{{ alt.name }}">
+                        {% endif %}
+                        
+                        <!-- Price tag -->
+                        <div class="absolute top-4 right-4">
+                            <div class="bg-green-600 text-white font-bold px-3 py-1 rounded-full shadow-lg">
+                                ₹{{ alt.price }}
+                            </div>
+                        </div>
+                        
+                        <!-- Prescription badge if needed -->
+                        {% if alt.prescription_required %}
+                        <div class="absolute top-4 left-4">
+                            <div class="bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                Rx
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="p-4">
+                        <h5 class="text-lg font-bold text-gray-800 mb-2">{{ alt.name }}</h5>
+                        
+                        <!-- Categories for alternatives - Make these more visible too -->
+                        {% if alt.categories.exists %}
+                        <div class="flex flex-wrap gap-1 mb-3">
+                            {% for category in alt.categories.all %}
+                            <span class="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-0.5 rounded-full border border-blue-200 shadow-sm">
+                                {{ category.name }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        
+                        <a href="{% url 'medicine_detail' alt.pk %}" class="inline-flex justify-center items-center w-full px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 text-sm font-medium rounded-md transition-colors duration-300 border border-gray-300">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="mt-12 bg-white rounded-lg shadow-md p-8 text-center border border-gray-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-xl text-gray-600">No generic alternatives available for this medicine.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

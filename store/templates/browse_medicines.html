@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 lg:px-8 py-8">
+    <h2 class="text-3xl font-bold text-gray-800 text-center mb-8">Browse Medicines</h2>
+
+    <!-- Search Form -->
+    <div class="mb-8">
+        <form method="GET" class="flex flex-col md:flex-row gap-4">
+            <div class="flex-grow">
+                <input type="text" name="q" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent" 
+                    placeholder="Search by medicine name or ingredient" value="{{ request.GET.q }}">
+            </div>
+            <button type="submit" class="btn-primary py-2 px-6">Search</button>
+        </form>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Sidebar for Filters -->
+        <div class="lg:col-span-1">
+            <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                <h5 class="text-xl font-semibold text-gray-800 mb-4">Filters</h5>
+                <form method="GET" action="{% url 'browse_medicines' %}">
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <label for="category" class="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                        <select name="category" class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">All Categories</option>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="brand" class="block text-gray-700 text-sm font-medium mb-2">Brand</label>
+                        <select name="brand" class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">All Brands</option>
+                            {% for brand in brands %}
+                            <option value="{{ brand }}" {% if request.GET.brand == brand %}selected{% endif %}>{{ brand }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Stock Availability</label>
+                        <select name="stock" class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">All</option>
+                            <option value="in_stock" {% if request.GET.stock == "in_stock" %}selected{% endif %}>In Stock</option>
+                            <option value="out_of_stock" {% if request.GET.stock == "out_of_stock" %}selected{% endif %}>Out of Stock</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Sort By</label>
+                        <select name="sort" class="w-full bg-white border border-gray-300 rounded-md py-2 px-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-500">
+                            <option value="">Default</option>
+                            <option value="name_asc" {% if request.GET.sort == "name_asc" %}selected{% endif %}>Name (A-Z)</option>
+                            <option value="name_desc" {% if request.GET.sort == "name_desc" %}selected{% endif %}>Name (Z-A)</option>
+                            <option value="newest" {% if request.GET.sort == "newest" %}selected{% endif %}>Newest Arrivals</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-2 px-4 rounded-md transition-colors duration-300">
+                        Apply Filters
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Medicines Display -->
+        <div class="lg:col-span-3">
+            {% if medicines %}
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for medicine in medicines %}
+                <div class="group medicine-card {% if forloop.counter > 6 %}hidden initial-hidden{% endif %}">
+                    <div class="relative h-full bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border border-gray-200">
+                        <div class="aspect-w-4 aspect-h-3 w-full overflow-hidden">
+                            {% if medicine.image %}
+                                <img src="{{ medicine.image.url }}" class="w-full h-52 object-cover transform transition-transform duration-500 group-hover:scale-110" alt="{{ medicine.name }}">
+                            {% else %}
+                                <img src="https://th.bing.com/th/id/OIP.nbFq6e14BqDCrFArSeUUwwHaE6?rs=1&pid=ImgDetMain" class="w-full h-52 object-cover transform transition-transform duration-500 group-hover:scale-110" alt="{{ medicine.name }}">
+                            {% endif %}
+                            
+                            <!-- Price tag -->
+                            <div class="absolute top-4 right-4">
+                                <div class="bg-primary-600 text-white font-bold px-3 py-1 rounded-full shadow-lg">
+                                    ₹{{ medicine.price }}
+                                </div>
+                            </div>
+                            
+                            <!-- Prescription badge if needed -->
+                            {% if medicine.prescription_required %}
+                            <div class="absolute top-4 left-4">
+                                <div class="bg-yellow-600 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                                    </svg>
+                                    Prescription
+                                </div>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="p-6">
+                            <h5 class="text-lg font-bold text-gray-800 mb-2">{{ medicine.name }}</h5>
+                            
+                            <!-- Categories tags -->
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                {% for category in medicine.categories.all %}
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded">
+                                    {{ category.name }}
+                                </span>
+                                {% endfor %}
+                            </div>
+                            
+                            <p class="text-gray-600 text-sm mb-4">{{ medicine.description|truncatewords:15 }}</p>
+                            
+                            <!-- Stock status -->
+                            {% if medicine.stock > 0 %}
+                            <div class="flex items-center text-green-600 text-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                                </svg>
+                                <span>In Stock ({{ medicine.stock }} available)</span>
+                            </div>
+                            {% else %}
+                            <div class="flex items-center text-red-600 text-sm mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                                <span>Out of Stock</span>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                                <a href="{% url 'medicine_detail' medicine.pk %}" class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-md transition-colors duration-300 border border-gray-300">
+                                    Details
+                                </a>
+                                
+                                {% if medicine.stock > 0 %}
+                                    {% if user.is_authenticated and user.customerprofile %}
+                                        <a href="{% url 'add_to_cart' medicine.pk %}" class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-medium rounded-md transition-colors duration-300">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                                            </svg>
+                                            Add to Cart
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'login' %}" class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium rounded-md transition-colors duration-300">
+                                            Login to Buy
+                                        </a>
+                                    {% endif %}
+                                {% else %}
+                                    <button class="flex-1 inline-flex justify-center items-center px-4 py-2 bg-gray-200 text-gray-500 text-sm font-medium rounded-md cursor-not-allowed" disabled>
+                                        Out of Stock
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <!-- View More Controls - Moved below the medicines -->
+            <div class="flex justify-center mt-10">
+                <button id="view-more-btn" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-medium rounded-md transition-colors duration-300 flex items-center shadow-md">
+                    <span id="view-more-text">View All Medicines</span>
+                    <svg id="view-more-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 transform transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+            
+            {% else %}
+            <div class="bg-white rounded-lg shadow-lg p-12 text-center border border-gray-200">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p class="text-xl text-gray-600">No medicines available matching your criteria.</p>
+                <a href="{% url 'browse_medicines' %}" class="mt-4 inline-block btn-primary">Clear Filters</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for View More/Less functionality -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const viewMoreBtn = document.getElementById('view-more-btn');
+        const viewMoreText = document.getElementById('view-more-text');
+        const viewMoreIcon = document.getElementById('view-more-icon');
+        const hiddenItems = document.querySelectorAll('.initial-hidden');
+        
+        let expanded = false;
+        
+        viewMoreBtn.addEventListener('click', function() {
+            if (!expanded) {
+                // Show all medicines
+                hiddenItems.forEach(item => {
+                    item.classList.remove('hidden');
+                });
+                viewMoreText.textContent = 'View Less';
+                viewMoreIcon.classList.add('rotate-180');
+                expanded = true;
+            } else {
+                // Hide extra medicines
+                hiddenItems.forEach(item => {
+                    item.classList.add('hidden');
+                });
+                viewMoreText.textContent = 'View All Medicines';
+                viewMoreIcon.classList.remove('rotate-180');
+                expanded = false;
+                
+                // Scroll back to top of medicines section
+                document.querySelector('.medicine-card').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'education_base.html' %}
+
+{% block education_content %}
+<h2 class="text-2xl font-bold text-primary-700 mb-4">Infographics</h2>
+<p class="text-gray-600 mb-8">Explore visual infographics that explain the advantages of using generic medicines.</p>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border border-gray-200">
+        <a href="https://www.medicinesforeurope.com/docs/infographic-iges.pdf" target="_blank">
+            <div class="bg-primary-600 text-white py-12 px-6 text-center">
+                <h3 class="text-xl font-bold mb-3">Generic Medicines Economic Impact</h3>
+                <p class="mb-2">Click to view detailed PDF infographic</p>
+                <div class="inline-block p-2 bg-white text-primary-600 rounded-lg mt-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3M3 17V7a2 2 0 012-2h6l2 2h6a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+                    </svg>
+                </div>
+            </div>
+        </a>
+        <div class="p-4">
+            <h5 class="font-bold text-gray-800">Generic Medicine Economic Impact</h5>
+            <p class="text-sm text-gray-600">Values of generic medicines: increased patient access, patient-related value, and overall economic value.</p>
+            <div class="mt-2 flex justify-between items-center">
+                <span class="text-xs text-gray-500">Source: Medicines for Europe</span>
+                <a href="https://www.medicinesforeurope.com/docs/infographic-iges.pdf" class="text-primary-600 hover:text-primary-700 text-sm" target="_blank">View Full PDF</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+            <div class="bg-red-700 text-white py-12 px-6 text-center">
+                <h3 class="text-xl font-bold mb-3">Average Annual Cost Comparison</h3>
+                <p class="mb-2">Brand-name drugs vs. Generic drugs</p>
+                <div class="flex justify-center mt-4">
+                    <div class="bg-white px-4 py-2 rounded mr-4">
+                        <div class="h-16 w-8 bg-red-700"></div>
+                        <p class="text-red-700 text-xs mt-1">Brand</p>
+                    </div>
+                    <div class="bg-white px-4 py-2 rounded">
+                        <div class="h-4 w-8 bg-blue-500"></div>
+                        <p class="text-blue-500 text-xs mt-1">Generic</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 bg-gray-800 text-white">
+                <h5 class="font-bold">Average Annual Cost of Therapy: Generics vs. Brand-name drugs</h5>
+                <p class="text-sm text-gray-300">Based on a market basket of 260 drugs widely used by older adults for chronic conditions.</p>
+                <div class="mt-2 flex justify-between items-center">
+                    <span class="text-xs text-gray-400">Source: AARP Public Policy Institute</span>
+                    <a href="https://cdn.mdedge.com/files/s3fs-public/139348_graphic_web.png" class="text-primary hover:text-primary-400 text-sm" target="_blank">View Original Chart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

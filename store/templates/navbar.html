@@ -1,0 +1,138 @@
+<!-- Navigation-->
+<nav class="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+            <div class="flex items-center">
+                <a href="{% url 'home' %}" class="flex-shrink-0 text-white font-bold text-xl">
+                    GenericMediCare
+                </a>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="{% url 'home' %}" class="text-white hover:bg-gray-700 rounded-md px-3 py-2 text-sm font-medium" aria-current="page">Home</a>
+                        <a href="{% url 'about' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">About</a>
+                        
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'logout' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Logout</a>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Login</a>
+                            <a href="{% url 'register' %}" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">Register</a>
+                        {% endif %}
+                        
+                        <div class="relative">
+                            <button id="shopButton" class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium flex items-center">
+                                Shop
+                                <svg class="ml-1 h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <div id="shopDropdown" class="hidden absolute z-10 mt-2 w-48 rounded-md bg-gray-800 py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                <a href="#!" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">All Products</a>
+                                <div class="border-t border-gray-700 my-1"></div>
+                                <a href="#!" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">Popular Items</a>
+                                <a href="#!" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white">New Arrivals</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="hidden md:block">
+                <button class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Cart
+                    <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full bg-primary-600 text-white">0</span>
+                </button>
+            </div>
+            
+            <!-- Mobile menu button -->
+            <div class="-mr-2 flex md:hidden">
+                <button id="mobile-menu-button" type="button" class="relative inline-flex items-center justify-center rounded-md bg-gray-800 p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <span class="absolute -inset-0.5"></span>
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile menu, show/hide based on menu state. -->
+    <div id="mobile-menu" class="hidden md:hidden">
+        <div class="space-y-1 px-2 pb-3 pt-2 sm:px-3">
+            <a href="{% url 'home' %}" class="block text-white hover:bg-gray-700 rounded-md px-3 py-2 text-base font-medium" aria-current="page">Home</a>
+            <a href="{% url 'about' %}" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">About</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Login</a>
+                <a href="{% url 'register' %}" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Register</a>
+            {% endif %}
+            
+            <button id="mobile-shop-button" class="w-full text-left text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium flex items-center justify-between">
+                Shop
+                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+            </button>
+            <div id="mobile-shop-dropdown" class="hidden ml-4 space-y-1 border-l-2 border-gray-700 pl-4">
+                <a href="#!" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">All Products</a>
+                <div class="border-t border-gray-700 my-1 mx-3"></div>
+                <a href="#!" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">Popular Items</a>
+                <a href="#!" class="block text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-base font-medium">New Arrivals</a>
+            </div>
+            
+            <div class="mt-3 px-3">
+                <button class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-md text-white bg-gray-700 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                    <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    Cart
+                    <span class="ml-1 inline-flex items-center justify-center w-5 h-5 text-xs font-semibold rounded-full bg-primary-600 text-white">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    // Desktop Shop dropdown
+    const shopButton = document.getElementById('shopButton');
+    const shopDropdown = document.getElementById('shopDropdown');
+    
+    if (shopButton && shopDropdown) {
+        shopButton.addEventListener('click', () => {
+            shopDropdown.classList.toggle('hidden');
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!shopButton.contains(e.target) && !shopDropdown.contains(e.target)) {
+                shopDropdown.classList.add('hidden');
+            }
+        });
+    }
+    
+    // Mobile menu
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
+    
+    // Mobile Shop dropdown
+    const mobileShopButton = document.getElementById('mobile-shop-button');
+    const mobileShopDropdown = document.getElementById('mobile-shop-dropdown');
+    
+    if (mobileShopButton && mobileShopDropdown) {
+        mobileShopButton.addEventListener('click', () => {
+            mobileShopDropdown.classList.toggle('hidden');
+        });
+    }
+</script>

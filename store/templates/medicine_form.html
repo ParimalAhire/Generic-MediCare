@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4 flex items-center">
+            <div class="mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Add Medicine</h2>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="p-6">
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+
+                {% if delete %}
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            <p class="text-red-800">Are you sure you want to delete <strong>{{ form.instance.name }}</strong>?</p>
+                        </div>
+                        <p class="text-red-700 mt-2 text-sm">This action cannot be undone. All data related to this medicine will be permanently removed.</p>
+                    </div>
+                {% else %}
+                    <!-- Medicine Name -->
+                    <div class="mb-4">
+                        <label for="id_name" class="block mb-2 text-gray-700">Medicine Name</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.name }}
+                        </div>
+                        {% if form.name.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.name.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label for="id_description" class="block mb-2 text-gray-700">Description</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.description }}
+                        </div>
+                        {% if form.description.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.description.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Two-column layout for Price and Stock -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label for="id_price" class="block mb-2 text-gray-700">Price (₹)</label>
+                            <div class="border border-gray-300 rounded-md bg-white p-0">
+                                {{ form.price }}
+                            </div>
+                            {% if form.price.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.price.errors }}</p>
+                            {% endif %}
+                        </div>
+
+                        <div>
+                            <label for="id_stock" class="block mb-2 text-gray-700">Stock Quantity</label>
+                            <div class="border border-gray-300 rounded-md bg-white p-0">
+                                {{ form.stock }}
+                            </div>
+                            {% if form.stock.errors %}
+                            <p class="text-red-500 text-xs mt-1">{{ form.stock.errors }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Active Ingredients -->
+                    <div class="mb-4">
+                        <label for="id_active_ingredients" class="block mb-2 text-gray-700">Active Ingredients</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.active_ingredients }}
+                        </div>
+                        {% if form.active_ingredients.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.active_ingredients.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Brand Name -->
+                    <div class="mb-4">
+                        <label for="id_brand_name" class="block mb-2 text-gray-700">Brand Name</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.brand_name }}
+                        </div>
+                        {% if form.brand_name.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.brand_name.errors }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Category -->
+                    <div class="mb-4">
+                        <label for="id_category_input" class="block mb-2 text-gray-700">Categories</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.category_input }}
+                        </div>
+                        {% if form.category_input.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.category_input.errors }}</p>
+                        {% endif %}
+                        <p class="text-gray-500 text-xs mt-1">Separate multiple categories with commas (e.g., "Pain Relief, Antibiotics")</p>
+                    </div>
+
+                    <!-- Requires Prescription -->
+                    <div class="mb-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5 mt-1">
+                                {{ form.prescription_required }}
+                            </div>
+                            <div class="ml-3">
+                                <label for="id_prescription_required" class="block text-gray-700">Requires Prescription?</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Image -->
+                    <div class="mb-4">
+                        <label for="id_image" class="block mb-2 text-gray-700">Upload Image</label>
+                        <div class="border border-gray-300 rounded-md bg-white p-0">
+                            {{ form.image }}
+                        </div>
+                        {% if form.image.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ form.image.errors }}</p>
+                        {% endif %}
+                        <p class="text-gray-500 text-xs mt-1">Recommended size: 500x500 pixels</p>
+                    </div>
+                {% endif %}
+
+                <!-- Form Actions -->
+                <div class="flex justify-between items-center pt-4 border-t border-gray-200 mt-6">
+                    <a href="{% url 'seller_dashboard' %}" class="inline-flex justify-center items-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </a>
+                    <button type="submit" class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        {% if delete %}Delete Medicine
+                        {% elif form.instance.pk %}Save Changes
+                        {% else %}Add Medicine
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Make Django form controls match the design */
+    .form-control, input[type="text"], input[type="number"], textarea, select, input[type="file"] {
+        width: 100% !important;
+        padding: 0.5rem !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+    
+    /* Fix checkbox appearance */
+    input[type="checkbox"] {
+        height: 1.25rem !important;
+        width: 1.25rem !important;
+    }
+</style>
+{% endblock %}

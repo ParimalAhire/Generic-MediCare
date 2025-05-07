@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <div class="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 px-6 py-4 flex items-center">
+            <div class="mr-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Upload Medicines</h2>
+        </div>
+        
+        <!-- Form Container -->
+        <div class="p-6">
+            <div class="mb-6">
+                <p class="text-gray-700 mb-4">Upload an Excel file (<strong>.xlsx</strong>) containing the medicine details.</p>
+                
+                <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-6">
+                    <h3 class="text-blue-800 font-medium mb-2">Required Columns:</h3>
+                    <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                        <li><strong>name</strong>: Medicine name</li>
+                        <li><strong>description</strong>: Short description of the medicine</li>
+                        <li><strong>price</strong>: Price in INR (₹)</li>
+                        <li><strong>stock</strong>: Available stock quantity</li>
+                        <li><strong>active_ingredients</strong>: Comma-separated list of active ingredients</li>
+                        <li><strong>brand_name</strong>: Brand of the medicine</li>
+                        <li><strong>prescription_required</strong>: TRUE or FALSE (if a prescription is needed)</li>
+                        <li><strong>categories</strong>: Comma-separated list of categories</li>
+                    </ul>
+                </div>
+            </div>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-4">
+                {% csrf_token %}
+                
+                <!-- File Upload Field -->
+                <div class="mb-4">
+                    <label for="id_file" class="block mb-2 text-gray-700">Select Excel File:</label>
+                    <div class="border border-gray-300 rounded-md bg-white p-0">
+                        {{ form.file }}
+                    </div>
+                    {% if form.file.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.file.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Messages Display -->
+                {% if messages %}
+                    <div class="mb-4">
+                        {% for message in messages %}
+                            <div class="{% if message.tags == 'success' %}bg-green-50 border-l-4 border-green-400 text-green-800{% elif message.tags == 'error' %}bg-red-50 border-l-4 border-red-400 text-red-800{% else %}bg-blue-50 border-l-4 border-blue-400 text-blue-800{% endif %} p-4">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <!-- Error Display Section -->
+                {% if errors %}
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 mb-4">
+                        <h5 class="text-red-800 font-medium flex items-center mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                            Errors in File Upload
+                        </h5>
+                        <ul class="list-disc pl-5 space-y-1 text-red-700">
+                            {% for error in errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <!-- Form Actions -->
+                <div class="flex justify-between items-center pt-4 border-t border-gray-200 mt-6">
+                    <a href="{% url 'seller_dashboard' %}" class="inline-flex justify-center items-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to Dashboard
+                    </a>
+                    <button type="submit" class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                        </svg>
+                        Upload Medicines
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Make Django form controls match the design */
+    .form-control, input[type="file"] {
+        width: 100% !important;
+        padding: 0.5rem !important;
+        border: none !important;
+        outline: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+</style>
+{% endblock %}
